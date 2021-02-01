@@ -1,0 +1,42 @@
+using AForge.Video;
+using AForge.Video.DirectShow;
+public FilterInfoCollection webcam;
+public VideoCaptureDevice camera;
+webcam = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            foreach (FilterInfo device in webcam)
+            {
+                combox.Items.Add(device.Name);
+            }
+            combox.SelectedItem = 0;
+            void cam_frame(object sender, NewFrameEventArgs eventArgs)
+        {
+            Bitmap bit = (Bitmap)eventArgs.Frame.Clone();
+            picbox.Image = bit;
+        }
+        try
+            {
+                camera = new VideoCaptureDevice(webcam[combox.SelectedIndex].MonikerString);
+                camera.NewFrame += new NewFrameEventHandler(cam_frame);
+                camera.Start();
+            }
+catch(Exception er)
+            {
+                MessageBox.Show(er.Message, "ErroR");
+            }
+            if (camera.IsRunning)
+            {
+                camera.Stop();
+            }
+else
+            {
+                MessageBox.Show("Camera is not runing", "ErroR");
+            }
+            SaveFileDialog save = new SaveFileDialog();
+saveFileDialog1.InitialDirectory = @"c:\";
+saveFileDialog1.Filter = "JPeg Image|*.jpg|Png Image|*.png";
+                       
+if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                picBox.Image.Save(saveFileDialog1.FileName);
+            }
+            
